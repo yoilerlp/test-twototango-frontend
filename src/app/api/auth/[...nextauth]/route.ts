@@ -18,9 +18,6 @@ const AuthOptionsConfig: AuthOptions = {
             password: credentials.password,
           });
 
-          console.log({
-            data: response,
-          });
           if (!response?.access_token) {
             throw new Error(errorMsg);
           }
@@ -49,13 +46,18 @@ const AuthOptionsConfig: AuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
+      return {
+        ...token,
+        ...user,
+      };
     },
-    async session({ session }) {
-      return session;
+    async session({ session, token, user }) {
+      return {
+        ...session,
+        user: {
+          ...token,
+        },
+      };
     },
   },
 };

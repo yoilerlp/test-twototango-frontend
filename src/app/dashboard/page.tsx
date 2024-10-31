@@ -1,6 +1,6 @@
-import React from 'react';
+import TasksPage from '../ui/components/pages/tasks/TasksPage';
 
 export default function DashboardPage() {
-  return <div>DashboardPage - Página protegida</div>;
+  return <TasksPage />;
 }
 
