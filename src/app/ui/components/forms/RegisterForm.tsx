@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import { InputText } from '../common/InputText';
 import Button from '../common/Button';
-import { RegisterSchema, RegisterSchemaType } from '@/schemes/registerScheme';
+import { RegisterSchema, RegisterSchemaType } from '@/schemas/registerSchema';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -93,7 +93,6 @@ export default function RegisterForm() {
           ) : (
             'Registrarse'
           )}
-          Registrarse
         </Button>
       </div>
       <div>

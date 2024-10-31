@@ -5,3 +5,8 @@ export type User = {
   password: string;
 };
 
+export type LoginResponse = {
+  access_token: string;
+  user: User;
+};
+
