@@ -4,22 +4,17 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
 
 import { InputText } from '../common/InputText';
 import Button from '../common/Button';
 import { LoginSchemaType, LoginSchema } from '@/schemas/loginSchema';
-import { useLoginUserMutation } from '@/hooks/useLoginUserMutation';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
-  // login user mutation
-  const { isPending, loginUser } = useLoginUserMutation({
-    onSuccess: () => {
-      toast.success('Usuario logueado exitosamente');
-    },
-    onError: (msg) => {
-      toast.error(msg);
-    },
-  });
+  const router = useRouter();
+
+  const [loading, setLoading] = React.useState(false);
 
   const {
     register,
@@ -30,7 +25,25 @@ export default function LoginForm() {
   });
 
   const handleSubmitForm = (data: LoginSchemaType) => {
-    loginUser(data);
+    setLoading(true);
+    signIn('credentials', {
+      username: data.email,
+      password: data.password,
+      redirect: false,
+    })
+      .then((res) => {
+        if (res?.ok) {
+          toast.success('Sesion iniciada exitosamente');
+
+          router.push('/dashboard');
+        }
+        if (res?.error) {
+          toast.error(res.error);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -49,6 +62,7 @@ export default function LoginForm() {
           label='Email'
           type='email'
           placeholder='Correo Electronico'
+          required
         />
         <InputText
           {...register('password')}
@@ -56,10 +70,11 @@ export default function LoginForm() {
           label='Contraseña'
           placeholder='Contraseña'
           type='password'
+          required
         />
 
         <Button type='submit' className='my-5'>
-          {isPending ? (
+          {loading ? (
             <span className='loading loading-ring loading-lg' />
           ) : (
             'Iniciar Sesion'

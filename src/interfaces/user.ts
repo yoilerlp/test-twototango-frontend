@@ -7,6 +7,8 @@ export type User = {
 
 export type LoginResponse = {
   access_token: string;
-  user: User;
+  user: User & {
+    id: string;
+  };
 };
 
