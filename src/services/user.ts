@@ -7,7 +7,9 @@ export const CreateUser = async (
   data: User
 ): Promise<ServiceResponse<User>> => {
   try {
-    const response = await fetch(`${API_URL}/users`, {
+    const url = `${API_URL}/user`;
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import ToastProvider from './ui/components/layout/ToastProvider';
+import { QueryContextClient } from '@/context/QueryClientProvider';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -22,8 +23,10 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${geistSans.variable} antialiased`}>
-        {children}
-        <ToastProvider />
+        <QueryContextClient>
+          {children}
+          <ToastProvider />
+        </QueryContextClient>
       </body>
     </html>
   );

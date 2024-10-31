@@ -8,8 +8,30 @@ import { RegisterSchema, RegisterSchemaType } from '@/schemes/registerScheme';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCreateUserMutation } from '@/hooks/useCreateUserMutation';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
+  const router = useRouter();
+
+  // create user mutation
+  const { isPending, createUser } = useCreateUserMutation({
+    onSuccess: () => {
+      toast.success('Usuario registrado exitosamente', {
+        duration: 1000,
+      });
+
+      router.push('/auth/login');
+    },
+    onError: (msg) => {
+      toast.error(msg, {
+        duration: 3000,
+      });
+    },
+  });
+
+  // create user form hook
   const {
     register,
     handleSubmit,
@@ -19,11 +41,14 @@ export default function RegisterForm() {
   });
 
   const handleSubmitForm = (data: RegisterSchemaType) => {
-    console.log(data);
+    createUser(data);
   };
 
   return (
-    <form className='w-full sm:max-w-2xl'>
+    <form
+      className='w-full sm:max-w-2xl'
+      onSubmit={handleSubmit(handleSubmitForm)}
+    >
       <h3 className='text-2xl font-bold'>Registrarse</h3>
       <p className='mb-3'>
         Completa los siguientes campos para crear tu cuenta
@@ -39,7 +64,6 @@ export default function RegisterForm() {
 
         <InputText
           label='Apellidos'
-          type='email'
           placeholder='Apellidos'
           {...register('lastName')}
           errorMsg={errors.lastName?.message}
@@ -63,7 +87,12 @@ export default function RegisterForm() {
           required
           errorMsg={errors.password?.message}
         />
-        <Button onClick={handleSubmit(handleSubmitForm)} className='mt-3'>
+        <Button disabled={isPending} className='mt-3' type='submit'>
+          {isPending ? (
+            <span className='loading loading-ring loading-lg' />
+          ) : (
+            'Registrarse'
+          )}
           Registrarse
         </Button>
       </div>
